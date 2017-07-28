@@ -8,7 +8,7 @@ from terminal_3270.signon_sessions import (
 # SignOnSession: dummy parameters
 test_user = 'login_userid'
 test_passwd = 'login_password'
-app_id = 'TST01'
+test_app_id = 'TST01'
 test_signon_user = 'signon_user'
 test_signon_passwd = 'signon_password'
 test_host = 'fake.host.org'
@@ -29,7 +29,7 @@ class TestSignOnSession(TestCase):
         with mock.patch('terminal_3270.signon_sessions.SignOnSession.signon', return_value=(True, 'FAKE STATUS BAR')):
             with mock.patch('terminal_3270.signon_sessions.SignOnSession.signoff', return_value=(True, 'FAKE STATUS BAR')):
                 with mock.patch('terminal_3270.sessions.Emulator'):
-                    session = SignOnSession(test_user, test_passwd, app_id, test_signon_user, test_signon_passwd, test_host)
+                    session = SignOnSession(test_user, test_passwd, test_app_id, test_signon_user, test_signon_passwd, test_host)
                     session.connect()
 
                     session.term_emulator.connect.assert_called_with(test_host)
@@ -51,7 +51,7 @@ class TestSignOnSession(TestCase):
                 with mock.patch('terminal_3270.sessions.Emulator'):
 
                     # We are testing this with-block!
-                    with SignOnSession(test_user, test_passwd, app_id, test_signon_user, test_signon_passwd, test_host) as session:
+                    with SignOnSession(test_user, test_passwd, test_app_id, test_signon_user, test_signon_passwd, test_host) as session:
                         self.assertTrue(mock_session_signon.called)
                         self.assertIsInstance(session, SignOnSession)
 
@@ -66,7 +66,7 @@ class TestSignOnSession(TestCase):
 
         with mock.patch('terminal_3270.sessions.Emulator') as mock_emulator:
             with mock.patch('terminal_3270.signon_sessions.SignOnSession.signoff', return_value=(True, 'FAKE STATUS BAR')):
-                session = SignOnSession(test_user, test_passwd, app_id, test_signon_user, test_signon_passwd, test_host)
+                session = SignOnSession(test_user, test_passwd, test_app_id, test_signon_user, test_signon_passwd, test_host)
 
                 session.term_emulator = mock_emulator()
                 session.term_emulator.status_bar = mock.MagicMock(return_value=(True, 'GOT SIGNON SUCCESSFUL'))
@@ -92,7 +92,7 @@ class TestSignOnSession(TestCase):
 
         with mock.patch('terminal_3270.sessions.Emulator') as mock_emulator:
             with mock.patch('terminal_3270.signon_sessions.SignOnSession.signoff', return_value=(True, 'FAKE STATUS BAR')):
-                session = SignOnSession(test_user, test_passwd, app_id, test_signon_user, test_signon_passwd, test_host)
+                session = SignOnSession(test_user, test_passwd, test_app_id, test_signon_user, test_signon_passwd, test_host)
 
                 session.term_emulator = mock_emulator()
                 session.term_emulator.status_bar = mock.MagicMock(return_value=(True, 'GOT ALREADY SIGNED ON'))
@@ -109,7 +109,7 @@ class TestSignOnSession(TestCase):
             with mock.patch('terminal_3270.sessions.Emulator') as mock_emulator:
                 with mock.patch('terminal_3270.sessions.Session3270.connect'):
                     with mock.patch('terminal_3270.signon_sessions.SignOnSession.signoff', return_value=(True, 'FAKE STATUS BAR')):
-                        session = SignOnSession(test_user, test_passwd, app_id, test_signon_user, test_signon_passwd, test_host)
+                        session = SignOnSession(test_user, test_passwd, test_app_id, test_signon_user, test_signon_passwd, test_host)
 
                         session.term_emulator = mock_emulator()
                         session.term_emulator.status_bar = mock.MagicMock(return_value=(False, 'INVALID SIGNON OR NEARLY ANYTHING ELSE'))
@@ -127,7 +127,7 @@ class TestSignOnSession(TestCase):
 
         with mock.patch('terminal_3270.sessions.Emulator') as mock_emulator:
             with mock.patch('terminal_3270.signon_sessions.SignOnSession.signon', return_value=(True, 'FAKE STATUS BAR')):
-                session = SignOnSession(test_user, test_passwd, app_id, test_signon_user, test_signon_passwd, test_host)
+                session = SignOnSession(test_user, test_passwd, test_app_id, test_signon_user, test_signon_passwd, test_host)
 
                 session.term_emulator = mock_emulator()
                 session.term_emulator.status_bar = mock.MagicMock(return_value=(True, 'GOT SIGNOFF SUCCESSFUL'))
@@ -150,7 +150,7 @@ class TestSignOnSession(TestCase):
 
         with mock.patch('terminal_3270.sessions.Emulator') as mock_emulator:
             with mock.patch('terminal_3270.signon_sessions.SignOnSession.signon', return_value=(True, 'FAKE STATUS BAR')):
-                session = SignOnSession(test_user, test_passwd, app_id, test_signon_user, test_signon_passwd, test_host)
+                session = SignOnSession(test_user, test_passwd, test_app_id, test_signon_user, test_signon_passwd, test_host)
 
                 session.term_emulator = mock_emulator()
                 session.term_emulator.status_bar = mock.MagicMock(return_value=(False, 'GOT BAD SIGNOFF STATUS'))

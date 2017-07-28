@@ -54,15 +54,14 @@ class SignOnSession(Session3270):
 
         :param str username: login user for terminal
         :param str password: login password for terminal
-        :param str app_id: login `application ID` sends user to the SIGNON section
+        :param str app_id: login `application ID` sends user to the LOGIN screen
         :param str signon_username: signon user
         :param str signon_password: signon password
         :param str host_3270: enter the hostname to the 3270 server
         :param bool visible: default False, when True means open a visible X-Windows terminal
         """
 
-        super(SignOnSession, self).__init__(username, password, host_3270, visible=visible)
-        self.app_id = app_id
+        super(SignOnSession, self).__init__(username, password, app_id, host_3270, visible=visible)
 
         self.signon_username = signon_username
         self.signon_password = signon_password

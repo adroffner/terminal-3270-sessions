@@ -43,13 +43,14 @@ class Session3270(object):
 
     """
 
-    def __init__(self, username, password, host_3270, visible=False):
+    def __init__(self, username, password, app_id, host_3270, visible=False):
         """ New Session3270
 
         Start the terminal session and login.
 
         :param str username: login user for terminal
         :param str password: login password for terminal
+        :param str app_id: login `application ID` sends user to the LOGIN screen
         :param str host_3270: enter the hostname to the 3270 server
         :param bool visible: default False, when True means open a visible X-Windows terminal
         """
@@ -57,6 +58,7 @@ class Session3270(object):
         self.host_3270 = host_3270
         self.username = username
         self.password = password
+        self.app_id = app_id
         self.visible = visible
 
         self.term_emulator = None
