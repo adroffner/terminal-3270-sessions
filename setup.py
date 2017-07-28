@@ -23,7 +23,9 @@ setup(name='terminal-3270-sessions',
           'py3270>=0.3.4',
       ],
       test_suite='nose.collector',
-      tests_require=['nose>=1.3.7'],
+      # tests_require=['nose>=1.3.7', 'coverage>=4.4.1'],
+      # NOTE: ./setup.py nosetests <= needs "setup_requires"
+      setup_requires=['nose>=1.3.7', 'coverage>=4.4.1'],
       classifiers=[
           'Development Status :: 5 - Production/Stable',
           'Intended Audience :: Developers',
