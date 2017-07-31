@@ -34,6 +34,7 @@ class TestLoginMixins(TestCase):
         with mock.patch('terminal_3270.sessions.Emulator') as mock_emulator_class:
             session = StubACF2Session(test_user, test_passwd, test_app_id, test_host)
 
+            # REJECTED is False and login succeeds.
             session.term_emulator = mock_emulator_class()
             session.term_emulator.string_found.return_value = False
 
@@ -66,6 +67,7 @@ class TestLoginMixins(TestCase):
         with mock.patch('terminal_3270.sessions.Emulator') as mock_emulator_class:
             session = StubACF2Session(test_user, test_passwd, test_app_id, test_host)
 
+            # REJECTED is True and login fails.
             session.term_emulator = mock_emulator_class()
             session.term_emulator.string_found.return_value = True
 
@@ -80,6 +82,7 @@ class TestLoginMixins(TestCase):
         with mock.patch('terminal_3270.sessions.Emulator') as mock_emulator_class:
             session = StubRACFSession(test_user, test_passwd, test_app_id, test_host)
 
+            # REJECTED is False and login succeeds.
             session.term_emulator = mock_emulator_class()
             session.term_emulator.string_found.return_value = False
 
@@ -113,11 +116,12 @@ class TestLoginMixins(TestCase):
         with mock.patch('terminal_3270.sessions.Emulator') as mock_emulator_class:
             session = StubRACFSession(test_user, test_passwd, test_app_id, test_host)
 
+            # REJECTED is True and login fails.
             session.term_emulator = mock_emulator_class()
             session.term_emulator.string_found.return_value = True
 
             login_bool = session.login()
 
             # Login Status: Look for a status message
-            session.term_emulator.string_found.assert_called_with(2, 2, 'REJECTED')
+            session.term_emulator.string_found.assert_called_with(17, 2, 'REJECTED')
             self.assertFalse(login_bool)

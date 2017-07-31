@@ -46,10 +46,16 @@ class MockEmulator(object):
         self.is_terminated = False
 
     def status_bar(self, passing_strings=[], terminator_strings=[], status_row=24):
-        if terminator_strings[0] in 'TEST LAST PAGE':
-            return (False, 'TEST LAST PAGE')
-        else:
-            return (True, 'TEST MORE PAGES')
+        if passing_strings:
+            if passing_strings[0] in 'FIND SUCCESSFUL':
+                return (True, 'FIND SUCCESSFUL')
+            else:
+                return (False, '******')  # unknown error event
+        elif terminator_strings:
+            if terminator_strings[0] in 'TEST LAST PAGE':
+                return (False, 'TEST LAST PAGE')
+            else:
+                return (True, 'TEST MORE PAGES')
 
     def string_get(self, row, col, length):
         print("return self.lines[{}][{}:({})]".format(row - 1, col - 1, (length + col - 1)))
