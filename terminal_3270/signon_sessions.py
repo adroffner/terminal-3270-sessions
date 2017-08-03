@@ -66,6 +66,15 @@ class SignOnSession(Session3270):
         self.signon_username = signon_username
         self.signon_password = signon_password
 
+    def send_signon_credentials(self):
+        """ Send SIGNON Credentials
+
+        Each SIGNON may require a different key to send the user and password fields to the server.
+        Override the default ENTER in you subclass as needed.
+        """
+
+        self.term_emulator.send_enter()
+
     def signon(self):
         """ SIGNON
 
@@ -88,7 +97,8 @@ class SignOnSession(Session3270):
         # SIGNON PASSWORD @(*, *)
         # Assume cursor automatically moves to the PASSWORD field.
         self.term_emulator.key_entry(self.signon_password)
-        self.term_emulator.send_enter()
+
+        self.send_signon_credentials()
 
         (status_bool, status_bar) = self.term_emulator.status_bar(passing_strings=self.signon_passing_strings)
         return (status_bool, status_bar)
