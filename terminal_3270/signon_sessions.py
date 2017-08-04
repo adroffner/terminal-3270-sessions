@@ -5,6 +5,8 @@ import logging
 
 log = logging.getLogger(__name__)
 
+TIMEOUT_SIGNON_SCREEN = 0.3  # 300 ms
+
 
 class SignOnError(ValueError):
     """ SIGNON Error.
@@ -20,21 +22,21 @@ class SignOnSession(Session3270):
     This class opens an s3270 logged-in terminal session.
     Then, the user passes a sigon screen to work on tasks.
 
-        with MySignOnSession(username, password, app_id, signon_username, signon_password, HOST_3270, visible=False) as terminal:
-            results = terminal.get_results()  # declared by your subclass!
+        with MySignOnSession(username, password, app_id, signon_username, signon_password, HOST_3270, visible=False) as session:
+            results = session.get_results()  # declared by your subclass!
 
         print(results)
 
     OR
 
         terminal = MySignOnSession(username, password, app_id, signon_username, signon_password, HOST_3270)
-        terminal.connect()
+        session.connect()
 
-        terminal.term_emulator.move_to(rownum, colnum)
-        terminal.term_emulator.fill_field("text")
+        session.term_emulator.move_to(rownum, colnum)
+        session.term_emulator.fill_field("text")
         ...
 
-        terminal.disconnect()
+        session.disconnect()
 
     """
 
@@ -88,7 +90,7 @@ class SignOnSession(Session3270):
 
         log.debug('Start SIGNON user/pass = {}/{}'.format(self.signon_username, self.signon_password))
 
-        sleep(3)
+        sleep(TIMEOUT_SIGNON_SCREEN)
 
         # SIGNON USER @(*, *)
         self.term_emulator.wait_for_field()
@@ -116,7 +118,7 @@ class SignOnSession(Session3270):
         #  SIGNOFF screen should be the same as SIGNON.
         self.term_emulator.format_screen(self.signon_screen_name)
 
-        sleep(3)
+        sleep(TIMEOUT_SIGNON_SCREEN)
 
         # SIGNOFF USER @(field_row, field_col) with "Y"
         self.term_emulator.wait_for_field()

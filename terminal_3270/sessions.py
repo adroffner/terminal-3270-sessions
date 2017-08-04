@@ -5,14 +5,16 @@ Use the py3270 library on this Linux machine to run an IBM 3270 session.
 IMPORTANT: This depends on the "x3270" or "s3270" command.
 
 Make sure the Linux commands are installed on this machine:
-    /usr/bin/s3270
+    /usr/bin/s3270 (visible=True)
 OR
-    /usr/bin/x3270
+    /usr/bin/x3270 (visible=False)
 
-RHEL/YUM has RPM package(s) for x3270
+RHEL/YUM has RPM package(s) for x3270 -> "yum install x3270-x11"
 """
 
 from .emulator import EmulatorPlus as Emulator
+
+TIMEOUT_WAIT_SCREEN = 10
 
 
 class LoginError(Exception):
@@ -25,21 +27,28 @@ class Session3270(object):
     This class opens an s3270 logged-in terminal session.
     Create subclasses to perform the terminal session actions, and collect results.
 
-        with MySession3270(username, password, HOST_3270, visible=False) as terminal:
-            results = terminal.get_results()  # declared by your subclass!
+        class MySession3270(Session3270):
+
+            def login(self):
+                # Go to LOGIN screen and enter (self.username, self.password)
+                # ...
+                pass
+
+        with MySession3270(username, password, HOST_3270, visible=False) as session:
+            results = session.get_results()  # declared by your subclass!
 
         print(results)
 
     OR
 
         terminal = MySession3270(username, password, HOST_3270)
-        terminal.connect()
+        session.connect()
 
-        terminal.term_emulator.move_to(rownum, colnum)
-        terminal.term_emulator.fill_field("text")
+        session.term_emulator.move_to(rownum, colnum)
+        session.term_emulator.fill_field("text")
         ...
 
-        terminal.disconnect()
+        session.disconnect()
 
     """
 
@@ -89,7 +98,7 @@ class Session3270(object):
         Connect to host and start session.
         """
 
-        self.term_emulator = Emulator(visible=self.visible, timeout=10)
+        self.term_emulator = Emulator(visible=self.visible, timeout=TIMEOUT_WAIT_SCREEN)
         self.term_emulator.connect(self.host_3270)
 
         if not self.login():

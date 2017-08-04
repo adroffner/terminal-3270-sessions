@@ -16,6 +16,8 @@ Use these mixins to provide common login procedures.
 
 from time import sleep
 
+TIMEOUT_LOGIN_SCREEN = 0.3  # 300 ms
+
 
 class ACF2LoginMixin:
     """ ACF2 Login Session to a 3270 Terminal
@@ -43,7 +45,7 @@ class ACF2LoginMixin:
         self.term_emulator.fill_field(1, 3, self.region, len(self.region))
         self.term_emulator.send_enter()
 
-        sleep(3)
+        sleep(TIMEOUT_LOGIN_SCREEN)
 
         # 2) Type in the USERID and PASSWORD fields.
 
@@ -91,7 +93,7 @@ class RACFLoginMixin:
         self.term_emulator.key_entry(self.app_id)
         self.term_emulator.send_enter()
 
-        sleep(3)
+        sleep(TIMEOUT_LOGIN_SCREEN)
 
         # 2) Type in the USERID and PASSWORD fields.
 
