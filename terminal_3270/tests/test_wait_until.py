@@ -35,6 +35,7 @@ class TestWaitUntil(TestCase):
             mock.call(*FOUND_ARGS, **FOUND_KWARG),  # True - stop!
         ]
         self.assertTrue(wu_runner.elapsed < time_limit)
+        self.assertFalse(wu_runner.expired)
 
     def test_wait_until_time_limit(self):
 
@@ -48,6 +49,7 @@ class TestWaitUntil(TestCase):
 
         mock_event.found_routine.mock_calls[-1] = mock.call(*FOUND_ARGS, **FOUND_KWARG)  # False - end on time limit
         self.assertTrue(wu_runner.elapsed >= time_limit)
+        self.assertTrue(wu_runner.expired)
 
     def test_wait_until_bad_found_function(self):
 

@@ -1,6 +1,6 @@
 from unittest import TestCase, mock
 
-from terminal_3270.emulator import EmulatorPlus
+from terminal_3270.emulator import EmulatorPlus, ScreenWaitError
 
 
 class TestEmulatorPlus(TestCase):
@@ -135,3 +135,42 @@ class TestEmulatorPlus(TestCase):
             mock_string_get.assert_called_with(24, 1, 80)  # Capture line 24
             self.assertTrue(status_bool)
             self.assertEqual(expected_status_bar, status_bar)
+
+    # =========================================================================
+
+    def test_wait_for_screen_found(self):
+
+        mock_wait_until = mock.MagicMock()
+        mock_expired_property = mock.PropertyMock(return_value=False)
+        type(mock_wait_until).expired = mock_expired_property
+
+        with mock.patch('terminal_3270.emulator.WaitUntil', return_value=mock_wait_until) as mock_wait_until_class:
+
+            expected_str = 'SIGNON SCREEN HERE'
+            expected_row = 5
+            expected_col = 12
+
+            self.emulator.wait_for_screen(expected_str, expected_row, expected_col)
+
+            mock_wait_until_class.assert_called_with(0.750, self.emulator.string_found, *(expected_row, expected_col, expected_str))
+            self.assertTrue(mock_wait_until.poll.called)
+            self.assertTrue(mock_expired_property.called)
+
+    def test_wait_for_screen_exception(self):
+
+        mock_wait_until = mock.MagicMock()
+        mock_expired_property = mock.PropertyMock(return_value=True)
+        type(mock_wait_until).expired = mock_expired_property
+
+        with self.assertRaises(ScreenWaitError):
+            with mock.patch('terminal_3270.emulator.WaitUntil', return_value=mock_wait_until) as mock_wait_until_class:
+
+                expected_str = 'SIGNON SCREEN HERE'
+                expected_row = 5
+                expected_col = 12
+
+                self.emulator.wait_for_screen(expected_str, expected_row, expected_col)
+
+                mock_wait_until_class.assert_called_with(0.750, self.emulator.string_found, *(expected_row, expected_col, expected_str))
+                self.assertTrue(mock_wait_until.poll.called)
+                self.assertTrue(mock_expired_property.called)

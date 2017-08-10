@@ -53,6 +53,10 @@ class WaitUntil(object):
     def elapsed(self):
         return (self.end_t - self.start_t)
 
+    @property
+    def expired(self):
+        return (self.elapsed > self.time_limit)
+
 
 if __name__ == '__main__':  # pragma: no cover
 

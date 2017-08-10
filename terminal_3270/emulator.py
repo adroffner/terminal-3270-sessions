@@ -5,6 +5,11 @@ The extra methods provide important features.
 """
 
 from py3270 import Emulator
+from terminal_3270.wait_until import WaitUntil
+
+
+class ScreenWaitError(Exception):
+    pass
 
 
 class EmulatorPlus(Emulator):
@@ -94,3 +99,23 @@ class EmulatorPlus(Emulator):
         else:
             status_ok = True
         return (status_ok, status_text)
+
+    def wait_for_screen(self, screen_str, row_loc, col_loc, time_limit=0.750):
+        """ Wait for Screen to Render.
+
+        Wait until the new screen renders the `screen_str` at location (row_loc, col_loc).
+        This avoids race conditions where the terminal draws a new screen slowly,
+        after the automation types into it.
+
+        :param str screen_str: a string on the screen that should be ready
+        :param int row_loc: row where string starts (1-based)
+        :param int col_loc: col where string starts (1-based)
+        :param float time_limit: a time limit in seconds to wait
+        :raises: ScreenWaitError when the `time_limit` is reached
+        """
+
+        wait_until = WaitUntil(time_limit, self.string_found, *(row_loc, col_loc, screen_str))
+        wait_until.poll()
+
+        if wait_until.expired:
+            raise ScreenWaitError('next screen did not appear in {} seconds'.format(time_limit))
