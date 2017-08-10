@@ -24,7 +24,7 @@ class WaitUntil(object):
             raise TypeError('"found_callable" must be a bool callable function')
 
         if time_limit <= 0.0:
-            ValueError('"time_limit" must be positive number, e.g. 0.725 seconds')
+            raise ValueError('"time_limit" must be positive number, e.g. 0.725 seconds')
 
         self.time_limit = time_limit
         self.found_callable = found_callable
