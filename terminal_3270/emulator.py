@@ -8,7 +8,11 @@ from py3270 import Emulator
 from terminal_3270.wait_until import WaitUntil
 
 
-class ScreenWaitError(Exception):
+class EmulatorError(Exception):
+    pass
+
+
+class ScreenWaitError(EmulatorError):
     pass
 
 
