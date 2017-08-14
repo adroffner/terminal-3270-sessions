@@ -12,7 +12,7 @@ OR
 RHEL/YUM has RPM package(s) for x3270 -> "yum install x3270-x11"
 """
 
-from time import sleep
+# from time import sleep
 from .emulator import EmulatorPlus as Emulator
 from terminal_3270.login_mixins import ACF2LoginMixin, RACFLoginMixin
 
@@ -20,7 +20,7 @@ import logging
 log = logging.getLogger(__name__)
 
 TIMEOUT_WAIT_SCREEN = 10
-TIMEOUT_SIGNON_SCREEN = 0.3  # 300 ms
+TIMEOUT_SIGNON_SCREEN = 0.350  # ms
 
 
 class SessionError(Exception):
@@ -168,6 +168,11 @@ class SignOnSession(Session3270):
     # Set the signon name to match the "/FOR <signon_screen_name>" on the real server.
     signon_screen_name = "VOS1SIGN"
 
+    # Wait for Screen Text:
+    signon_screen_str = "WFAC SECURITY SIGNON"
+    signon_screen_str_row = 2
+    signon_screen_str_col = 23
+
     signon_passing_strings = ['SIGNON SUCCESSFUL', 'ALREADY SIGNED ON']
     signoff_passing_strings = ['SIGNOFF SUCCESSFUL']
 
@@ -215,7 +220,12 @@ class SignOnSession(Session3270):
 
         log.debug('Start SIGNON user/pass = {}/{}'.format(self.signon_username, self.signon_password))
 
-        sleep(TIMEOUT_SIGNON_SCREEN)
+        # sleep(TIMEOUT_SIGNON_SCREEN)
+        self.term_emulator.wait_for_screen(
+            self.signon_screen_str,
+            self.signon_screen_str_row,
+            self.signon_screen_str_col,
+            time_limit=TIMEOUT_SIGNON_SCREEN)
 
         # SIGNON USER @(*, *)
         self.term_emulator.wait_for_field()
@@ -243,7 +253,12 @@ class SignOnSession(Session3270):
         #  SIGNOFF screen should be the same as SIGNON.
         self.term_emulator.format_screen(self.signon_screen_name)
 
-        sleep(TIMEOUT_SIGNON_SCREEN)
+        # sleep(TIMEOUT_SIGNON_SCREEN)
+        self.term_emulator.wait_for_screen(
+            self.signon_screen_str,
+            self.signon_screen_str_row,
+            self.signon_screen_str_col,
+            time_limit=TIMEOUT_SIGNON_SCREEN)
 
         # SIGNOFF USER @(field_row, field_col) with "Y"
         self.term_emulator.wait_for_field()
