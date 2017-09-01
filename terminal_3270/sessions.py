@@ -20,7 +20,7 @@ import logging
 log = logging.getLogger(__name__)
 
 TIMEOUT_WAIT_SCREEN = 10
-TIMEOUT_SIGNON_SCREEN = 0.350  # ms
+TIMEOUT_SIGNON_SCREEN = 1.350  # ms
 
 
 class SessionError(Exception):
@@ -220,7 +220,6 @@ class SignOnSession(Session3270):
 
         log.debug('Start SIGNON user/pass = {}/{}'.format(self.signon_username, self.signon_password))
 
-        # sleep(TIMEOUT_SIGNON_SCREEN)
         self.term_emulator.wait_for_screen(
             self.signon_screen_str,
             self.signon_screen_str_row,
@@ -238,6 +237,15 @@ class SignOnSession(Session3270):
         self.send_signon_credentials()
 
         (status_bool, status_bar) = self.term_emulator.status_bar(passing_strings=self.signon_passing_strings)
+
+        # RESET: Sometimes the user is ALREADY SIGNED ON and goes straight to the last used screen.
+        if not status_bool:
+            self.term_emulator.send_clear()
+            self.term_emulator.format_screen(self.signon_screen_name)
+            self.term_emulator.send_enter()  # Double ENTER is on purpose
+            self.term_emulator.send_enter()
+            (status_bool, status_bar) = self.term_emulator.status_bar(passing_strings=self.signon_passing_strings)
+
         return (status_bool, status_bar)
 
     def signoff(self, field_row=12, field_col=16):
@@ -253,7 +261,6 @@ class SignOnSession(Session3270):
         #  SIGNOFF screen should be the same as SIGNON.
         self.term_emulator.format_screen(self.signon_screen_name)
 
-        # sleep(TIMEOUT_SIGNON_SCREEN)
         self.term_emulator.wait_for_screen(
             self.signon_screen_str,
             self.signon_screen_str_row,
