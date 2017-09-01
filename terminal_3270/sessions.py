@@ -241,10 +241,30 @@ class SignOnSession(Session3270):
         # RESET: Sometimes the user is ALREADY SIGNED ON and goes straight to the last used screen.
         if not status_bool:
             self.term_emulator.send_clear()
+
+            # Repeat SIGNON...
             self.term_emulator.format_screen(self.signon_screen_name)
-            # Double SEND is on purpose
+
+            log.debug('RESET SIGNON user/pass = {}/{}'.format(self.signon_username, self.signon_password))
+
+            self.term_emulator.wait_for_screen(
+                self.signon_screen_str,
+                self.signon_screen_str_row,
+                self.signon_screen_str_col,
+                time_limit=TIMEOUT_SIGNON_SCREEN)
+
             self.send_signon_credentials()
+
+            # SIGNON USER @(*, *)
+            self.term_emulator.wait_for_field()
+            self.term_emulator.key_entry(self.signon_username)
+
+            # SIGNON PASSWORD @(*, *)
+            # Assume cursor automatically moves to the PASSWORD field.
+            self.term_emulator.key_entry(self.signon_password)
+
             self.send_signon_credentials()
+
             (status_bool, status_bar) = self.term_emulator.status_bar(passing_strings=self.signon_passing_strings)
 
         return (status_bool, status_bar)
