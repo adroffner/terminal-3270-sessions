@@ -242,8 +242,9 @@ class SignOnSession(Session3270):
         if not status_bool:
             self.term_emulator.send_clear()
             self.term_emulator.format_screen(self.signon_screen_name)
-            self.term_emulator.send_enter()  # Double ENTER is on purpose
-            self.term_emulator.send_enter()
+            # Double SEND is on purpose
+            self.send_signon_credentials()
+            self.send_signon_credentials()
             (status_bool, status_bar) = self.term_emulator.status_bar(passing_strings=self.signon_passing_strings)
 
         return (status_bool, status_bar)
