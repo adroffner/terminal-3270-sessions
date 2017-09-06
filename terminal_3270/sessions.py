@@ -12,9 +12,10 @@ OR
 RHEL/YUM has RPM package(s) for x3270 -> "yum install x3270-x11"
 """
 
-# from time import sleep
+from time import sleep
 from .emulator import EmulatorPlus as Emulator
 from terminal_3270.login_mixins import ACF2LoginMixin, RACFLoginMixin
+from terminal_3270.wait_until import WaitUntil
 
 import logging
 log = logging.getLogger(__name__)
@@ -207,6 +208,32 @@ class SignOnSession(Session3270):
 
         self.term_emulator.send_enter()
 
+    def _clear_screen_queue(self):
+        """ Clear Screen Queue.
+
+        Remove one layer of the screen queue.
+        Eventually the SIGNON HEADER should show.
+        """
+
+        self.term_emulator.send_clear()
+        self.term_emulator.send_pa_key(2)
+
+        # A BLANK first line means a cleared screen.
+        if self.term_emulator.string_found(1, 1, ' ' * 80):
+            return True
+        else:
+            return False
+
+    def remove_queued_screens(self, time_limit=0.750):
+        """ Remove Queued Screens.
+
+        Prior SIGNON may leave "queued screens" before the expected SIGNON screen.
+        This routine removes the "queued screens".
+        """
+
+        wait_until = WaitUntil(time_limit, self._clear_screen_queue)
+        wait_until.poll()
+
     def signon(self):
         """ SIGNON
 
@@ -216,11 +243,9 @@ class SignOnSession(Session3270):
         :rtype: tuple, (bool, STATUS BAR string)
         """
 
+        self.remove_queued_screens()
         self.term_emulator.format_screen(self.signon_screen_name)
 
-        log.debug('Start SIGNON user/pass = {}/{}'.format(self.signon_username, self.signon_password))
-
-        # sleep(TIMEOUT_SIGNON_SCREEN)
         self.term_emulator.wait_for_screen(
             self.signon_screen_str,
             self.signon_screen_str_row,
@@ -236,6 +261,9 @@ class SignOnSession(Session3270):
         self.term_emulator.key_entry(self.signon_password)
 
         self.send_signon_credentials()
+
+        # delay to wait for the status bar
+        sleep(TIMEOUT_SIGNON_SCREEN)
 
         (status_bool, status_bar) = self.term_emulator.status_bar(passing_strings=self.signon_passing_strings)
         return (status_bool, status_bar)
@@ -253,7 +281,6 @@ class SignOnSession(Session3270):
         #  SIGNOFF screen should be the same as SIGNON.
         self.term_emulator.format_screen(self.signon_screen_name)
 
-        # sleep(TIMEOUT_SIGNON_SCREEN)
         self.term_emulator.wait_for_screen(
             self.signon_screen_str,
             self.signon_screen_str_row,

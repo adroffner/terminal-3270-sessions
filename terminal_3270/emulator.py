@@ -25,6 +25,9 @@ class EmulatorPlus(Emulator):
     def send_clear(self):
         self.exec_command('Clear()'.encode('ascii'))
 
+    def send_pa_key(self, number):
+        self.exec_command('PA({})'.format(number).encode('ascii'))
+
     def send_pf_key(self, number):
         self.exec_command('PF({})'.format(number).encode('ascii'))
 
