@@ -4,8 +4,12 @@ This EmulatorPlus class extends the standard py3270.Emulator to add common 3270 
 The extra methods provide important features.
 """
 
+import logging
+
 from py3270 import Emulator
 from terminal_3270.wait_until import WaitUntil
+
+log = logging.getLogger(__name__)
 
 
 class EmulatorError(Exception):
@@ -97,7 +101,7 @@ class EmulatorPlus(Emulator):
         """
 
         status_text = self.string_get(status_row, 1, 80)
-        print('STATUS-BAR: [{}]'.format(status_text))
+        log.debug('STATUS-BAR: [{}]'.format(status_text))
 
         if terminator_strings:
             status_ok = not any([(v.upper() in status_text) for v in terminator_strings])
