@@ -5,7 +5,8 @@
 # Run the unittests with nose & coverage.py
 # ============================================================================
 
-PYTHON=/usr/local/bin/python3
+# PYTHON=/usr/local/bin/python3
+PYTHON=python3
 
 $PYTHON ./setup.py nosetests
 
