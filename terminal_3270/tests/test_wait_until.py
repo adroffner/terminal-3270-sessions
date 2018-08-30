@@ -53,10 +53,10 @@ class TestWaitUntil(TestCase):
 
     def test_wait_until_bad_found_function(self):
 
-        with self.assertRaisesRegexp(TypeError, r'^"found_callable"'):
+        with self.assertRaisesRegex(TypeError, r'^"found_callable"'):
             WaitUntil(0.1, "not_a_callable")
 
     def test_wait_until_bad_found_time_limit(self):
 
-        with self.assertRaisesRegexp(ValueError, r'^"time_limit"'):
+        with self.assertRaisesRegex(ValueError, r'^"time_limit"'):
             WaitUntil(-120.1, int, *('38'))

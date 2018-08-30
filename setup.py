@@ -16,7 +16,7 @@ setup(name='terminal-3270-sessions',
       long_description=readme(),
       author='Andrew Droffner',
       author_email='ad718x@att.com',
-      # url='',
+      url='https://codecloud.web.att.com/projects/ST_TITAN/repos/3270_client_osscwl_api/browse',
       # download_url='',
       packages=['terminal_3270'],
       install_requires=[
@@ -26,6 +26,10 @@ setup(name='terminal-3270-sessions',
       # tests_require=['nose>=1.3.7', 'coverage>=4.4.1'],
       # NOTE: ./setup.py nosetests <= needs "setup_requires"
       setup_requires=['nose>=1.3.7', 'coverage>=4.4.1'],
+      keywords=[
+          '3270', 'tn3270', 'py3270',
+          'terminal', 'emulator'
+      ],
       classifiers=[
           'Development Status :: 5 - Production/Stable',
           'Intended Audience :: Developers',
