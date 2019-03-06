@@ -143,6 +143,5 @@ class EmulatorPlus(Emulator):
         ypos -= 1
         cmd = self.exec_command('Ascii({0},{1},{2})'.format(ypos, xpos, length).encode('latin-1'))
         # this usage of ascii should only return a single line of data
-        print(cmd)
-        assert len(cmd.data) == 1, cmd.data
+        assert len(cmd.data) == 1
         return cmd.data[0].decode('latin-1')

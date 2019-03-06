@@ -3,6 +3,11 @@ from unittest import TestCase, mock
 from terminal_3270.emulator import EmulatorPlus, ScreenWaitError
 
 
+class TestingMock():
+
+    def __init__(self):
+        self.data = ['data'.encode('latin-1')]
+
 class TestEmulatorPlus(TestCase):
 
     def setUp(self):
@@ -179,7 +184,6 @@ class TestEmulatorPlus(TestCase):
         xpos = 2
         ypos = 4
         length = 10
-        with mock.patch('terminal_3270.emulator.Emulator.exec_command') as mock_exec:
-            mock_exec.data = ["data"]
+        with mock.patch('terminal_3270.emulator.Emulator.exec_command', return_value=TestingMock()):
             result = self.emulator.get_special_char_str(ypos, xpos, length)
-            print(result)
+            self.assertEqual(result, 'data')
