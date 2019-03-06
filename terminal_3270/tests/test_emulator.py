@@ -174,3 +174,13 @@ class TestEmulatorPlus(TestCase):
                 mock_wait_until_class.assert_called_with(0.750, self.emulator.string_found, *(expected_row, expected_col, expected_str))
                 self.assertTrue(mock_wait_until.poll.called)
                 self.assertTrue(mock_expired_property.called)
+
+    def test_get_special_char_str(self):
+        xpos = 2
+        ypos = 4
+        length = 10
+        with mock.patch('terminal_3270.emulator.Emulator.exec_command', side_effect=mock.Mock()) as mock_exec:
+            mock_exec.data = ["data"]
+            result = self.emulator.get_special_char_str(ypos, xpos, length)
+            print(result)
+
