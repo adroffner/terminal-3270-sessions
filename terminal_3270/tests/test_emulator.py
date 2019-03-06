@@ -179,8 +179,7 @@ class TestEmulatorPlus(TestCase):
         xpos = 2
         ypos = 4
         length = 10
-        with mock.patch('terminal_3270.emulator.Emulator.exec_command', side_effect=mock.Mock()) as mock_exec:
+        with mock.patch('terminal_3270.emulator.Emulator.exec_command') as mock_exec:
             mock_exec.data = ["data"]
             result = self.emulator.get_special_char_str(ypos, xpos, length)
             print(result)
-
