@@ -1,4 +1,4 @@
 """ IBM 3270 Terminal API Client Sessions
 """
 
-__version__ = '0.6b5'
+__version__ = '0.7.1'

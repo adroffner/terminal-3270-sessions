@@ -3,6 +3,12 @@ from unittest import TestCase, mock
 from terminal_3270.emulator import EmulatorPlus, ScreenWaitError
 
 
+class TestingMock():
+
+    def __init__(self):
+        self.data = ['data'.encode('latin-1')]
+
+
 class TestEmulatorPlus(TestCase):
 
     def setUp(self):
@@ -152,7 +158,9 @@ class TestEmulatorPlus(TestCase):
 
             self.emulator.wait_for_screen(expected_str, expected_row, expected_col)
 
-            mock_wait_until_class.assert_called_with(0.750, self.emulator.string_found, *(expected_row, expected_col, expected_str))
+            mock_wait_until_class.assert_called_with(0.750,
+                                                     self.emulator.string_found,
+                                                     *(expected_row, expected_col, expected_str))
             self.assertTrue(mock_wait_until.poll.called)
             self.assertTrue(mock_expired_property.called)
 
@@ -171,6 +179,16 @@ class TestEmulatorPlus(TestCase):
 
                 self.emulator.wait_for_screen(expected_str, expected_row, expected_col)
 
-                mock_wait_until_class.assert_called_with(0.750, self.emulator.string_found, *(expected_row, expected_col, expected_str))
+                mock_wait_until_class.assert_called_with(0.750,
+                                                         self.emulator.string_found,
+                                                         *(expected_row, expected_col, expected_str))
                 self.assertTrue(mock_wait_until.poll.called)
                 self.assertTrue(mock_expired_property.called)
+
+    def test_get_special_char_str(self):
+        xpos = 2
+        ypos = 4
+        length = 10
+        with mock.patch('terminal_3270.emulator.Emulator.exec_command', return_value=TestingMock()):
+            result = self.emulator.get_special_char_str(ypos, xpos, length)
+            self.assertEqual(result, 'data')
